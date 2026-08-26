@@ -1,5 +1,5 @@
 <template>
-    <AuthBase title="Create an account" description="Add a new user account">
+    <AuthBase title="Create an account" description="Enter your details below to create an account">
         <Head title="Register" />
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">

@@ -20,6 +20,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
+# .env is excluded from the build context, so VITE_APP_NAME (baked into the
+# JS bundle at build time, not read at runtime) has to be set explicitly here
+# — otherwise app.ts falls back to its hardcoded 'Laravel' default.
+ENV VITE_APP_NAME="Technical Trial Project"
+
 # Ziggy's JS package resolves via a relative path into vendor/, so composer
 # install has to run before npm run build, not in a separate build stage.
 RUN composer install --no-dev --optimize-autoloader --no-interaction \
