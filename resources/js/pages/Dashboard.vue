@@ -22,9 +22,11 @@
                                     <!-- {{ primaryUsage.model }}  -->
                                     Daily Free Tier Token Limit
                                 </span>
-                                <span> {{ primaryUsage.used }} / {{ primaryUsage.limit }} </span>
+                                <span v-if="primaryUsage.limit !== null"> {{ primaryUsage.used }} / {{ primaryUsage.limit }} </span>
+                                <span v-else> {{ primaryUsage.used }} request(s) today (no published limit) </span>
                             </div>
                             <v-progress-linear
+                                v-if="primaryUsage.limit !== null"
                                 :model-value="(primaryUsage.used / (primaryUsage.limit ?? 1)) * 100"
                                 :color="usageColor"
                                 height="6"
@@ -38,14 +40,14 @@
                             </template>
                             <div class="body-1">
                                 Voice analysis is performed by Google's Gemini API (paid service, but for trial purposes we are using the
-                                <strong>free tier</strong>) &mdash; primary model <strong class="text-cyan-400">gemini-3.1-flash-lite</strong>, with
-                                automatic fallback to <strong class="text-cyan-400">gemini-3.5-flash-lite</strong> if the primary model request fails.
+                                <strong>free tier</strong>) &mdash; primary model <strong class="text-cyan-400">gemini-3-flash-preview</strong>, with
+                                automatic fallback to <strong class="text-cyan-400">gemini-2.5-flash</strong> if the primary model request fails.
                                 <br />
                                 <br />
-                                Pricing (standard tier, per Google's published rates &mdash; this is the tier actually in use, processed in real
-                                time): gemini-3.1-flash-lite is $0.25 / $1.50 per 1M text input/output tokens (<strong class="text-cyan-400">
-                                    $0.50 per 1 Mil audio input tokens </strong
-                                >); gemini-3.5-flash-lite is $0.30 / $2.50 per 1M input/output tokens (flat rate for audio and text). <br />
+                                Pricing (standard tier, per Google's published rates): gemini-3-flash-preview is $0.50 / $3.00 per 1M text
+                                input/output tokens (<strong class="text-cyan-400">$1.00 per 1 Mil audio input tokens</strong>, output includes
+                                thinking tokens); gemini-2.5-flash is $0.30 / $2.50 per 1M text input/output tokens ($1.00 per 1 Mil audio input
+                                tokens). <br />
                                 <br />
                                 <strong class="text-cyan-400">Measured cost per audio minute</strong> (from real test calls, standard/real-time
                                 pricing &mdash; what this dashboard actually uses):
@@ -59,20 +61,22 @@
                                     <tbody>
                                         <tr class="border-b border-white/10">
                                             <td class="py-1 pr-3 text-cyan-400">call_001 (30.9s)</td>
-                                            <td class="py-1 text-cyan-400">~$0.00117</td>
+                                            <td class="py-1 text-cyan-400">~$0.00654</td>
                                         </tr>
                                         <tr class="border-b border-white/10">
                                             <td class="py-1 pr-3 text-cyan-400">call_002 (35s)</td>
-                                            <td class="py-1 text-cyan-400">~$0.00114</td>
+                                            <td class="py-1 text-cyan-400">~$0.00565</td>
                                         </tr>
                                         <tr>
                                             <td class="py-1 pr-3 text-cyan-400">call_003 (2.9min)</td>
-                                            <td class="py-1 text-cyan-400">~$0.00083</td>
+                                            <td class="py-1 text-cyan-400">~$0.00237</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                Averaging about <strong class="text-cyan-400"> $0.0009/min </strong>&mdash; roughly
-                                <strong class="text-cyan-400"> 2.5x - 3.75x </strong> under AutoAce's $0.003/minute ceiling, with no discount applied.
+                                Blended average <strong class="text-cyan-400"> ~$0.0034/min </strong> across these 3 clips &mdash; this is
+                                <strong class="text-cyan-400">above</strong> AutoAce's $0.003/minute ceiling on shorter clips specifically (thinking
+                                tokens add meaningful cost that doesn't scale down for short audio). Cost/accuracy tradeoffs for this model versus
+                                the cheaper gemini-3.1-flash-lite/gemini-3.5-flash-lite pairing are documented in the technical memo.
                             </div>
                         </v-tooltip>
                     </v-toolbar>
@@ -188,14 +192,14 @@
                                         <td>{{ item.silence }}</td>
                                         <td>{{ item.confidence }}</td>
                                     </template>
-                                    <!-- <td>
+                                    <td>
                                         <v-chip v-if="item.modelUsed" size="small" :color="item.wasFallback ? 'warning' : undefined" variant="tonal">
                                             {{ item.modelUsed }}
                                             <v-tooltip v-if="item.wasFallback" activator="parent" location="top">
                                                 Primary model was unavailable (e.g. rate limit) — this result came from the fallback model.
                                             </v-tooltip>
                                         </v-chip>
-                                    </td> -->
+                                    </td>
                                     <td>
                                         <v-btn
                                             :icon="playingFile === item.name ? 'mdi-pause' : 'mdi-play'"
@@ -304,7 +308,7 @@ const headers = [
     { title: 'Overlap', key: 'overlap' },
     { title: 'Silence', key: 'silence' },
     { title: 'Confidence', key: 'confidence' },
-    // { title: 'Model', key: 'modelUsed', sortable: false },
+    { title: 'Model', key: 'modelUsed', sortable: false },
     { title: 'Play', key: 'play', sortable: false },
 ];
 
