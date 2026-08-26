@@ -39,9 +39,9 @@
                                 <v-btn icon="mdi-help-circle-outline" variant="text" v-bind="tooltipProps" />
                             </template>
                             <div class="body-1">
-                                Voice analysis is performed by Google's Gemini API (paid service, but for trial purposes we are using the
-                                <strong>free tier</strong>) &mdash; primary model <strong class="text-cyan-400">gemini-3-flash-preview</strong>, with
-                                automatic fallback to <strong class="text-cyan-400">gemini-2.5-flash</strong> if the primary model request fails.
+                                Voice analysis is performed by Google's Gemini API &mdash; primary model
+                                <strong class="text-cyan-400">gemini-3-flash-preview</strong>, with automatic fallback to
+                                <strong class="text-cyan-400">gemini-2.5-flash</strong> if the primary model request fails.
                                 <br />
                                 <br />
                                 Pricing (standard tier, per Google's published rates): gemini-3-flash-preview is $0.50 / $3.00 per 1M text
@@ -73,10 +73,16 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                Blended average <strong class="text-cyan-400"> ~$0.0034/min </strong> across these 3 clips &mdash; this is
-                                <strong class="text-cyan-400">above</strong> AutoAce's $0.003/minute ceiling on shorter clips specifically (thinking
-                                tokens add meaningful cost that doesn't scale down for short audio). Cost/accuracy tradeoffs for this model versus
-                                the cheaper gemini-3.1-flash-lite/gemini-3.5-flash-lite pairing are documented in the technical memo.
+                                Blended average <strong class="text-cyan-400"> ~$0.0034/min </strong> across these 3 clips &mdash; this is above
+                                AutoAce's $0.003/minute ceiling on shorter clips specifically (thinking tokens add meaningful cost that doesn't scale
+                                down for short audio). Cost/accuracy tradeoffs for this model versus the cheaper
+                                gemini-3.1-flash-lite/gemini-3.5-flash-lite pairing are documented in the technical memo.
+                                <br />
+                                <br />
+                                This website is hosted for free on Render using it's <strong> FREE TIER </strong>, so latency may be higher than a
+                                paid hosting service. The Gemini API is also a paid service, but for trial purposes we are using the
+                                <strong> FREE TIER </strong>. If you exceed the free tier limit, you will receive an error message and will not be
+                                able to analyze any more audio until the next day.
                             </div>
                         </v-tooltip>
                     </v-toolbar>
@@ -88,6 +94,7 @@
                                 accept=".zip,audio/*"
                                 prepend-icon="mdi-folder-zip-outline"
                                 :error-messages="fileErrors"
+                                :disabled="uploading || isPolling"
                                 show-size
                                 variant="outlined"
                                 density="compact"
@@ -128,7 +135,7 @@
                                 {{ item.unmatchedFiles.length }}
                             </template>
                             <template #item.actions="{ item }">
-                                <v-btn size="small" variant="outlined" @click="viewBatch(item.batchId)">View</v-btn>
+                                <v-btn size="small" variant="outlined" :disabled="uploading || isPolling" @click="viewBatch(item.batchId)">View</v-btn>
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -379,6 +386,8 @@ async function loadBatches() {
 }
 
 function viewBatch(batchId: string) {
+    if (uploading.value || isPolling.value) return;
+
     audioEl?.pause();
     playingFile.value = null;
     missingFiles.value = [];
