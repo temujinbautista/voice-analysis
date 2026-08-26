@@ -356,6 +356,7 @@ async function pollStatus(batchId: string) {
 
     if (results.value.every((r) => r.status === 'completed' || r.status === 'failed')) {
         stopPolling();
+        archiveFile.value = null;
     }
 }
 
