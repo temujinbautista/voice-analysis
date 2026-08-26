@@ -21,13 +21,17 @@ class GeminiCallAnalyzer
         private string $baseUrl = '',
         private string $model = '',
         private string $fallbackModel = '',
-        private float $temperature = 0.2,
+        // Must default to null, not 0.2 — the class is always resolved via
+        // the container with no explicit args, so a non-falsy default here
+        // would permanently win over `?? config(...)` below and silently
+        // ignore GEMINI_TEMPERATURE regardless of what it's set to.
+        private ?float $temperature = null,
     ) {
         $this->apiKey = $apiKey ?: config('services.gemini.api_key');
         $this->baseUrl = $baseUrl ?: config('services.gemini.base_url');
         $this->model = $model ?: config('services.gemini.model');
         $this->fallbackModel = $fallbackModel ?: config('services.gemini.fallback_model');
-        $this->temperature = $temperature ?: config('services.gemini.temperature');
+        $this->temperature = $temperature ?? config('services.gemini.temperature');
     }
 
     /**

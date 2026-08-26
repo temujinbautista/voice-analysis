@@ -41,7 +41,7 @@ services:
       - key: GEMINI_BASE
         value: https://generativelanguage.googleapis.com/v1beta
       - key: GEMINI_TEMPERATURE
-        value: "0.2"
+        value: "0"
       - key: ADMIN_SEED_EMAIL
         sync: false
       - key: ADMIN_SEED_PASSWORD
