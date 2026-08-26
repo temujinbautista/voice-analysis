@@ -11,21 +11,23 @@ This deploys the app as a single Docker web service on Render's free tier. Since
    - `APP_KEY` — generate one locally first: `php artisan key:generate --show`, then paste the full `base64:...` value.
    - `APP_URL` — leave blank for now; Render assigns the service a URL like `https://auto-ace.onrender.com` once it's created. Come back after the first deploy, set this to that exact URL, and redeploy (Manual Deploy → Deploy latest commit) so Laravel generates correct absolute URLs/CSRF cookies.
    - `GEMINI_API_KEY` — your Gemini API key.
+   - `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD` — see below; this is what actually lets you log in on a fresh/reset database.
 5. Click **Apply**/**Deploy**. The first build takes a few minutes (installs PHP extensions, ffmpeg, Composer deps, builds the Vite assets).
 
 ## After the first deploy
 
-- Visit the assigned URL, register an account, and test an upload.
+- Visit the assigned URL and log in with whatever you set `ADMIN_SEED_EMAIL`/`ADMIN_SEED_PASSWORD` to.
 - If you changed `APP_URL` after setup, trigger a redeploy so it takes effect.
 
 ## What resets on restart/redeploy
 
-The free tier has no persistent disk, so a new container starts from a clean image every time. The entrypoint (`docker/entrypoint.sh`) re-creates the SQLite file and re-runs migrations on every boot, which means:
+The free tier has no persistent disk, so a new container starts from a clean image every time. The entrypoint (`docker/entrypoint.sh`) re-creates the SQLite file and re-runs migrations **and seeders** on every boot, which means:
 
-- User accounts, batch history, and analysis results are wiped whenever the service restarts (including Render's automatic spin-down after ~15 minutes of no traffic, and every redeploy).
+- Batch history and analysis results are wiped whenever the service restarts (including Render's automatic spin-down after ~15 minutes of no traffic, and every redeploy).
 - Uploaded audio files are wiped the same way.
+- **The one login account is not lost**, because `database/seeders/DatabaseSeeder.php` re-creates (or updates) a user matching `ADMIN_SEED_EMAIL`/`ADMIN_SEED_PASSWORD` every time the container boots. Since registration itself is locked to that same email (see `RegisteredUserController::ALLOWED_EMAIL`), without this seeding step a wiped database would be a genuine lockout — there'd be no way to create the first account at all, since registering requires already being logged in. To change the password, just update `ADMIN_SEED_PASSWORD` in Render's Environment tab and redeploy.
 
-This is fine for "try it out in one sitting" testing, not for anything meant to persist. If that becomes a real requirement, the fix is a free external Postgres (Neon/Supabase) for the DB and an external object store (Cloudflare R2) for uploaded audio — deliberately not done here to keep this deploy simple, see docs/TECHNICAL_MEMO.md.
+Everything else being wiped is fine for "try it out in one sitting" testing, not for anything meant to persist. If that becomes a real requirement, the fix is a free external Postgres (Neon/Supabase) for the DB and an external object store (Cloudflare R2) for uploaded audio — deliberately not done here to keep this deploy simple, see docs/TECHNICAL_MEMO.md.
 
 ## Known limitations of this deploy specifically
 

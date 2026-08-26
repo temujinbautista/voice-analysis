@@ -53,4 +53,13 @@ return [
         'path' => env('FFMPEG_PATH', 'ffmpeg'),
     ],
 
+    // Re-seeded on every boot (see DatabaseSeeder) so the one allowed login
+    // always exists even on hosts with no persistent disk, where the
+    // database resets on every restart/redeploy.
+    'admin_seed' => [
+        'email' => env('ADMIN_SEED_EMAIL'),
+        'name' => env('ADMIN_SEED_NAME', 'Admin'),
+        'password' => env('ADMIN_SEED_PASSWORD'),
+    ],
+
 ];
