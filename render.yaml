@@ -26,6 +26,8 @@ services:
         value: database
       - key: QUEUE_CONNECTION
         value: sync
+      - key: PHP_CLI_SERVER_WORKERS
+        value: "2"
       - key: FILESYSTEM_DISK
         value: local
       - key: FFMPEG_PATH
