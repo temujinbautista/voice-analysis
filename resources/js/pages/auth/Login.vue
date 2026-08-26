@@ -54,11 +54,6 @@
                             <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                             Log in
                         </v-btn>
-
-                        <div class="text-center text-sm">
-                            Don't have an account?
-                            <TextLink :href="route('register')" tabindex="5">Register</TextLink>
-                        </div>
                     </div>
                 </form>
             </v-card-text>
@@ -72,7 +67,6 @@ import InputError from '@/components/InputError.vue';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import TextLink from '@/components/TextLink.vue';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';

@@ -19,9 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard/analyze/{batchId}/audio/{filename}', [VoiceAnalysisController::class, 'audio'])->name('dashboard.analyze.audio');
     Route::get('dashboard/batches', [VoiceAnalysisController::class, 'batches'])->name('dashboard.batches');
     Route::get('dashboard/usage', [VoiceAnalysisController::class, 'usage'])->name('dashboard.usage');
-});
 
-Route::middleware('guest')->group(function () {
     Route::get('dashboard/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('dashboard/register', [RegisteredUserController::class, 'store']);
 });
