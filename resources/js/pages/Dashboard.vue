@@ -22,7 +22,7 @@
                                     <!-- {{ primaryUsage.model }}  -->
                                     Daily Free Tier Token Limit
                                 </span>
-                                <span>{{ primaryUsage.used }} / {{ primaryUsage.limit }}</span>
+                                <span> {{ primaryUsage.used }} / {{ primaryUsage.limit }} </span>
                             </div>
                             <v-progress-linear
                                 :model-value="(primaryUsage.used / (primaryUsage.limit ?? 1)) * 100"
@@ -180,14 +180,14 @@
                                         <td>{{ item.silence }}</td>
                                         <td>{{ item.confidence }}</td>
                                     </template>
-                                    <td>
+                                    <!-- <td>
                                         <v-chip v-if="item.modelUsed" size="small" :color="item.wasFallback ? 'warning' : undefined" variant="tonal">
                                             {{ item.modelUsed }}
                                             <v-tooltip v-if="item.wasFallback" activator="parent" location="top">
                                                 Primary model was unavailable (e.g. rate limit) — this result came from the fallback model.
                                             </v-tooltip>
                                         </v-chip>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <v-btn
                                             :icon="playingFile === item.name ? 'mdi-pause' : 'mdi-play'"
@@ -295,7 +295,7 @@ const headers = [
     { title: 'Overlap', key: 'overlap' },
     { title: 'Silence', key: 'silence' },
     { title: 'Confidence', key: 'confidence' },
-    { title: 'Model', key: 'modelUsed', sortable: false },
+    // { title: 'Model', key: 'modelUsed', sortable: false },
     { title: 'Play', key: 'play', sortable: false },
 ];
 
