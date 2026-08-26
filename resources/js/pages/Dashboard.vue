@@ -166,7 +166,7 @@
                                         :colspan="columns.length - 4"
                                         class="text-gray-500"
                                     >
-                                        <v-progress-circular indeterminate size="18" width="2" color="primary" />
+                                        <v-progress-linear indeterminate height="6" color="primary" rounded />
                                     </td>
                                     <td v-else-if="item.error" :colspan="columns.length - 4" class="text-red-600">{{ item.error }}</td>
                                     <template v-else>

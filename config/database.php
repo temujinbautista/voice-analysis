@@ -37,9 +37,13 @@ return [
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-            'busy_timeout' => null,
-            'journal_mode' => null,
-            'synchronous' => null,
+            // SQLite serializes writers; without a busy_timeout a concurrent
+            // write fails immediately ("database is locked") instead of
+            // waiting its turn. WAL mode also lets reads proceed without
+            // blocking on an in-progress write.
+            'busy_timeout' => env('DB_BUSY_TIMEOUT', 5000),
+            'journal_mode' => env('DB_JOURNAL_MODE', 'wal'),
+            'synchronous' => env('DB_SYNCHRONOUS', 'normal'),
         ],
 
         'mysql' => [
