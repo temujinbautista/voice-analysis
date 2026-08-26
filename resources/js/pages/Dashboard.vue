@@ -146,10 +146,18 @@
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
-                        <v-progress-linear v-if="isPolling" :model-value="progressPercent" class="mb-4" color="primary" height="6" />
+                        <v-progress-linear
+                            v-if="isPolling || uploading"
+                            :indeterminate="results.length === 0"
+                            :model-value="progressPercent"
+                            class="mb-4"
+                            color="primary"
+                            height="6"
+                        />
 
-                        <v-alert v-if="isPolling" type="info" class="mb-4" variant="tonal">
-                            Processing {{ completedCount }} of {{ results.length }} file(s)&hellip;
+                        <v-alert v-if="isPolling || uploading" type="info" class="mb-4" variant="tonal">
+                            <template v-if="results.length">Processing {{ completedCount }} of {{ results.length }} file(s)&hellip;</template>
+                            <template v-else>Uploading and analyzing your batch&hellip;</template>
                         </v-alert>
 
                         <v-alert v-else-if="hasErrors" type="warning" class="mb-4" variant="tonal">
@@ -257,6 +265,7 @@ interface UsageEntry {
 const archiveFile = ref<File | null>(null);
 const fileErrors = ref<string[]>([]);
 const processing = ref(false);
+const uploading = ref(false);
 
 const results = ref<Result[]>([]);
 const missingFiles = ref<string[]>([]);
@@ -412,6 +421,9 @@ async function submit() {
     missingFiles.value = [];
     unmatchedFiles.value = [];
     processing.value = true;
+    uploading.value = true;
+    stopPolling();
+    results.value = [];
 
     const formData = new FormData();
     formData.append('archive', archiveFile.value);
@@ -434,6 +446,7 @@ async function submit() {
         }
     } finally {
         processing.value = false;
+        uploading.value = false;
     }
 }
 
