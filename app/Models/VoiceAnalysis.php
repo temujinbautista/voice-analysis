@@ -14,6 +14,7 @@ class VoiceAnalysis extends Model
         'storage_path',
         'status',
         'model_used',
+        'was_fallback',
         'result',
         'expected_result',
         'error',
@@ -22,6 +23,7 @@ class VoiceAnalysis extends Model
     protected $casts = [
         'result' => 'array',
         'expected_result' => 'array',
+        'was_fallback' => 'boolean',
     ];
 
     public function user(): BelongsTo

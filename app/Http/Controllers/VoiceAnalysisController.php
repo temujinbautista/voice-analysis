@@ -158,8 +158,6 @@ class VoiceAnalysisController extends Controller
             ->orderBy('id')
             ->get();
 
-        $primaryModel = config('services.gemini.model');
-
         return response()->json([
             'results' => $analyses->map(fn (VoiceAnalysis $a) => [
                 'name' => $a->file_name,
@@ -168,7 +166,7 @@ class VoiceAnalysisController extends Controller
                 'expected' => $a->expected_result,
                 'error' => $a->error,
                 'modelUsed' => $a->model_used,
-                'wasFallback' => $a->model_used !== null && $a->model_used !== $primaryModel,
+                'wasFallback' => (bool) $a->was_fallback,
             ]),
         ]);
     }

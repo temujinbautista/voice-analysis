@@ -44,6 +44,7 @@ class AnalyzeVoiceCallJob implements ShouldQueue
                 'status' => 'completed',
                 'result' => $result,
                 'model_used' => $analyzed['model_used'],
+                'was_fallback' => $analyzed['was_fallback'],
             ]);
         } catch (RuntimeException $e) {
             $analysis->update(['status' => 'failed', 'error' => $e->getMessage()]);

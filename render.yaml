@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: auto-ace
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /login
+    envVars:
+      - key: APP_NAME
+        value: AutoAce Voice Analysis
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /app/database/database.sqlite
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: FFMPEG_PATH
+        value: ffmpeg
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite
+      - key: GEMINI_FALLBACK_MODEL
+        value: gemini-3.5-flash-lite
+      - key: GEMINI_BASE
+        value: https://generativelanguage.googleapis.com/v1beta
+      - key: GEMINI_TEMPERATURE
+        value: "0.2"

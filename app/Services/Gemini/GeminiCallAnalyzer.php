@@ -34,22 +34,26 @@ class GeminiCallAnalyzer
      * Analyze a single audio file and return the structured result matching
      * the required output schema, plus which model actually produced it.
      * Falls back to the secondary model if the primary model fails —
-     * callers should surface `model_used` so a silent fallback (e.g. the
-     * primary hitting a rate limit) is visible rather than indistinguishable
-     * from a normal primary-model answer.
+     * callers should surface `model_used`/`was_fallback` so a silent fallback
+     * (e.g. the primary hitting a rate limit) is visible rather than
+     * indistinguishable from a normal primary-model answer.
      *
-     * @return array{data: array, model_used: string}
+     * @return array{data: array, model_used: string, was_fallback: bool}
      */
     public function analyze(string $audioPath, string $mimeType): array
     {
         try {
-            return ['data' => $this->callModel($this->model, $audioPath, $mimeType), 'model_used' => $this->model];
+            $data = $this->callModel($this->model, $audioPath, $mimeType);
+
+            return ['data' => $data, 'model_used' => $this->model, 'was_fallback' => false];
         } catch (RuntimeException $e) {
             if (! $this->fallbackModel || $this->fallbackModel === $this->model) {
                 throw $e;
             }
 
-            return ['data' => $this->callModel($this->fallbackModel, $audioPath, $mimeType), 'model_used' => $this->fallbackModel];
+            $data = $this->callModel($this->fallbackModel, $audioPath, $mimeType);
+
+            return ['data' => $data, 'model_used' => $this->fallbackModel, 'was_fallback' => true];
         }
     }
 
