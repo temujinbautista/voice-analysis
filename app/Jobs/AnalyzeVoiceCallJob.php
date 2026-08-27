@@ -2,12 +2,15 @@
 
 namespace App\Jobs;
 
+use App\Mail\BatchAnalysisCompleted;
 use App\Models\VoiceAnalysis;
+use App\Models\VoiceAnalysisBatch;
 use App\Services\Audio\SilenceDetector;
 use App\Services\Gemini\GeminiCallAnalyzer;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
@@ -48,6 +51,46 @@ class AnalyzeVoiceCallJob implements ShouldQueue
             ]);
         } catch (RuntimeException $e) {
             $analysis->update(['status' => 'failed', 'error' => $e->getMessage()]);
+        }
+
+        $this->notifyIfBatchComplete($analysis->batch_id);
+    }
+
+    /**
+     * Email the batch owner once every file in the batch has finished
+     * (completed or failed) — fires exactly once per batch even if multiple
+     * files finish around the same time, by atomically claiming the send via
+     * a WHERE notified_at IS NULL update; only the caller whose update
+     * actually affects a row proceeds to send.
+     */
+    private function notifyIfBatchComplete(string $batchId): void
+    {
+        $stillRunning = VoiceAnalysis::where('batch_id', $batchId)
+            ->whereIn('status', ['pending', 'processing'])
+            ->exists();
+
+        if ($stillRunning) {
+            return;
+        }
+
+        $claimed = VoiceAnalysisBatch::where('batch_id', $batchId)
+            ->whereNull('notified_at')
+            ->update(['notified_at' => now()]);
+
+        if ($claimed === 0) {
+            return;
+        }
+
+        $batch = VoiceAnalysisBatch::with('user')->where('batch_id', $batchId)->first();
+
+        if (! $batch || ! $batch->user) {
+            return;
+        }
+
+        try {
+            Mail::to($batch->user->email)->send(new BatchAnalysisCompleted($batch));
+        } catch (Throwable $e) {
+            Log::warning('Batch-complete notification email failed to send', ['batch_id' => $batchId, 'error' => $e->getMessage()]);
         }
     }
 
