@@ -40,14 +40,14 @@
                             </template>
                             <div class="body-1">
                                 Voice analysis is performed by Google's Gemini API &mdash; primary model
-                                <strong class="text-cyan-400">gemini-2.5-flash</strong>, with automatic fallback to
-                                <strong class="text-cyan-400">gemini-3-flash-preview</strong> if the primary model request fails.
+                                <strong class="text-cyan-400">gemini-3-flash-preview</strong>, with automatic fallback to
+                                <strong class="text-cyan-400">gemini-2.5-flash</strong> if the primary model request fails (pricing and measured
+                                accuracy are comparable between the two).
                                 <br />
                                 <br />
-                                Pricing (standard tier, per Google's published rates): gemini-2.5-flash is $0.30 / $2.50 per 1M text
-                                input/output tokens (<strong class="text-cyan-400">$1.00 per 1 Mil audio input tokens</strong>, output includes
-                                thinking tokens); gemini-3-flash-preview is $0.50 / $3.00 per 1M text input/output tokens ($1.00 per 1 Mil audio
-                                input tokens). <br />
+                                Pricing (standard tier, per Google's published rates): $0.50 / $3.00 per 1M text input/output tokens
+                                (<strong class="text-cyan-400">$1.00 per 1 Mil audio input tokens</strong>, output includes thinking tokens).
+                                <br />
                                 <br />
                                 <strong class="text-cyan-400">Measured cost per audio minute</strong> (from real test calls, standard/real-time
                                 pricing &mdash; what this dashboard actually uses):
@@ -55,35 +55,28 @@
                                     <thead>
                                         <tr class="border-b border-white/30">
                                             <th class="pr-3 font-semibold">Clip</th>
-                                            <th class="font-semibold">gemini-2.5-flash</th>
-                                            <th class="font-semibold">gemini-3-flash-preview</th>
+                                            <th class="font-semibold">Cost/min</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="border-b border-white/10">
                                             <td class="py-1 pr-3 text-cyan-400">call_001 (30.9s)</td>
-                                            <td class="py-1 text-cyan-400">~$0.00457</td>
                                             <td class="py-1 text-cyan-400">~$0.00654</td>
                                         </tr>
                                         <tr class="border-b border-white/10">
                                             <td class="py-1 pr-3 text-cyan-400">call_002 (35s)</td>
-                                            <td class="py-1 text-cyan-400">~$0.00598</td>
                                             <td class="py-1 text-cyan-400">~$0.00565</td>
                                         </tr>
                                         <tr>
                                             <td class="py-1 pr-3 text-cyan-400">call_003 (2.9min)</td>
-                                            <td class="py-1 text-cyan-400">~$0.00227</td>
                                             <td class="py-1 text-cyan-400">~$0.00237</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                Blended average <strong class="text-cyan-400">~$0.0031/min</strong> (primary) and
-                                <strong class="text-cyan-400">~$0.0034/min</strong> (fallback) across these 3 clips &mdash; both are
-                                <strong class="text-cyan-400">above</strong> AutoAce's $0.003/minute ceiling on shorter clips specifically
-                                (thinking tokens add meaningful cost that doesn't scale down for short audio). Field accuracy against the 3
-                                labeled samples was measured at 6/18 for both models &mdash; essentially tied. Cost/accuracy tradeoffs for this
-                                pairing versus the cheaper gemini-3.1-flash-lite/gemini-3.5-flash-lite pairing are documented in the technical
-                                memo.
+                                Blended average <strong class="text-cyan-400">~$0.0034/min</strong> across these 3 clips &mdash; this is
+                                <strong class="text-cyan-400">above</strong> AutoAce's $0.003/minute ceiling on shorter clips specifically.
+                                Cost/accuracy tradeoffs versus the cheaper gemini-3.1-flash-lite/gemini-3.5-flash-lite pairing are documented in
+                                the technical memo.
                                 <br />
                                 <br />
                                 This website is hosted for free on Render using it's <strong> FREE TIER </strong>, so latency may be higher than a

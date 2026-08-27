@@ -35,9 +35,9 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-2.5-flash
-      - key: GEMINI_FALLBACK_MODEL
         value: gemini-3-flash-preview
+      - key: GEMINI_FALLBACK_MODEL
+        value: gemini-2.5-flash
       - key: GEMINI_BASE
         value: https://generativelanguage.googleapis.com/v1beta
       - key: GEMINI_TEMPERATURE
