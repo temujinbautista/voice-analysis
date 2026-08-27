@@ -36,7 +36,7 @@
 
                         <v-tooltip location="bottom end" max-width="380">
                             <template #activator="{ props: tooltipProps }">
-                                <v-icon icon="mdi-help-circle-outline" size="24" style="cursor: default" v-bind="tooltipProps" />
+                                <v-icon icon="mdi-help-circle-outline" class="mr-5" size="24" style="cursor: default" v-bind="tooltipProps" />
                             </template>
                             <div class="body-1">
                                 Voice analysis is performed by Google's Gemini API &mdash; model
