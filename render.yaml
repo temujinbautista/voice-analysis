@@ -46,8 +46,11 @@ services:
         sync: false
       - key: ADMIN_SEED_PASSWORD
         sync: false
+      # Set to smtp to re-enable batch-complete notification emails — left on
+      # log for now since a real SMTP send adds latency to the sync-queue
+      # request path.
       - key: MAIL_MAILER
-        value: smtp
+        value: log
       - key: MAIL_HOST
         value: smtp.gmail.com
       - key: MAIL_PORT
