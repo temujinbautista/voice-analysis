@@ -73,8 +73,8 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                Blended average <strong class="text-cyan-400">~$0.0034/min</strong> across these 3 clips &mdash; this is
-                                <strong class="text-cyan-400">above</strong> AutoAce's $0.003/minute ceiling on shorter clips specifically.
+                                Blended average <strong class="text-cyan-400">~$0.0034/min</strong> across these 3 clips &mdash; this is above
+                                AutoAce's $0.003/minute ceiling on shorter clips specifically.
                                 Cost/accuracy tradeoffs versus the cheaper gemini-3.1-flash-lite/gemini-3.5-flash-lite pairing are documented in
                                 the technical memo.
                                 <br />
