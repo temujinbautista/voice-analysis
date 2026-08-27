@@ -39,10 +39,9 @@
                                 <v-btn icon="mdi-help-circle-outline" variant="text" v-bind="tooltipProps" />
                             </template>
                             <div class="body-1">
-                                Voice analysis is performed by Google's Gemini API &mdash; primary model
-                                <strong class="text-cyan-400">gemini-3-flash-preview</strong>, with automatic fallback to
-                                <strong class="text-cyan-400">gemini-2.5-flash</strong> if the primary model request fails (pricing and measured
-                                accuracy are comparable between the two).
+                                Voice analysis is performed by Google's Gemini API &mdash; model
+                                <strong class="text-cyan-400">gemini-3-flash-preview</strong>, used for both the primary and fallback attempt
+                                (some alternative models weren't reachable with this API key/project, e.g. a 404 on gemini-2.5-flash).
                                 <br />
                                 <br />
                                 Pricing (standard tier, per Google's published rates): $0.50 / $3.00 per 1M text input/output tokens
